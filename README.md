@@ -1,3 +1,14 @@
 # weather-awesome
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/github-9hzuns-juh7un)
+# Project setup
+
+`npm install`
+`npx nuxi build`
+
+# Development
+
+`npx nuxi dev
+
+# Build
+
+`npm build`

@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <NuxtLogo />
-    <h1>Welcome to Nuxt</h1>
+    <Weather />
   </div>
 </template>
 
@@ -18,12 +17,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: white;
+  font-family: helvetica, arial, sans-serif;
 }
 
 h1 {
-  color: white;
   text-align: center;
-  font-family: helvetica, arial, sans-serif;
   font-weight: 400;
 }
 </style>

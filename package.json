@@ -6,6 +6,10 @@
     "start": "node .output/server/index.mjs"
   },
   "devDependencies": {
-    "nuxt3": "latest"
+    "nuxt": "^3.0.0",
+    "sass": "^1.56.2"
+  },
+  "dependencies": {
+    "maz-ui": "^3.5.0"
   }
 }
