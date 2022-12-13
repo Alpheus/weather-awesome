@@ -1,13 +1,10 @@
 # weather-awesome
 
-# Project setup
+# Project setup & development
 
-`npm install`
-`npx nuxi build`
+`npm install && npm run dev`
 
-# Development
-
-`npx nuxi dev
+Check `localhost:3000`
 
 # Build
 

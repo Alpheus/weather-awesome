@@ -7,6 +7,14 @@ export default defineNuxtConfig({
         'http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=',
     },
   },
+  app: {
+    head: {
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { charset: 'utf-8' },
+      ],
+    },
+  },
   vite: {
     css: {
       preprocessorOptions: {
