@@ -6,5 +6,5 @@ const switchValue = ref(false);
 </script>
 
 <template>
-  <MazSwitch v-model="switchValue" :color="info" :name="info" :key="info" />
+  <MazSwitch v-model="switchValue" color="secondary" />
 </template>

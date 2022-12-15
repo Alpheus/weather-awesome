@@ -9,3 +9,7 @@ Check `localhost:3000`
 # Build
 
 `npm build`
+
+# Local Demo
+
+`npx nuxi preview`

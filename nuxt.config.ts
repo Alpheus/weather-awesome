@@ -3,8 +3,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       publicWeatherKey: '99410713dc6616c9ae408faa5385b2e6',
-      weatherUrl:
-        'http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=',
+      weatherUrl: 'https://api.openweathermap.org/data/2.5/weather',
     },
   },
   app: {
