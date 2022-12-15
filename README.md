@@ -12,4 +12,4 @@ Check `localhost:3000`
 
 # Local Demo
 
-`npx nuxi preview`
+`npx nuxi generate && npx nuxi preview`

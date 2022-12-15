@@ -1,15 +1,16 @@
 import { useLocalStorage, useGeolocation } from '@vueuse/core';
 
+// It is reasonable to assume this device won't move substantially in 5 minutes
 const cacheKey = (date: Date): string => {
   date.setMinutes(Math.floor(date.getMinutes() / 5) * 5);
   date.setSeconds(0);
   date.setMilliseconds(0);
 
-  return date.valueOf();
+  return date.toUTCString();
 };
 
 const defaultW = {
-  temp: null,
+  temp: 0,
   location: 'Loading...',
   humidity: 0,
   weather: '',
@@ -23,24 +24,20 @@ export const useWeather = () => {
   const { coords, error: geoError } = useGeolocation();
   const localCache = useLocalStorage('weather-cache', {
     fetchedAt: '',
-    weather: null,
+    weather: defaultW,
   });
 
-  const {
-    data: weather,
-    error,
-    refresh,
-  } = useLazyAsyncData('weather', async () => {
+  const weatherData = useAsyncData('weather', async () => {
     if (geoError.value) return defaultW;
     if (coords.value.longitude == 0) return defaultW;
     if (coords.value.longitude == Infinity) return defaultW;
 
     let response;
 
-    const newSyncKey = cacheKey(Date.NOW);
-    // It is reasonable to assume this device won't move substantially in 5 minutes
+    const newSyncKey = cacheKey(new Date());
+
     if (localCache.value.fetchedAt == newSyncKey) {
-      return;
+      return localCache.value.weather;
     }
 
     try {
@@ -76,7 +73,7 @@ export const useWeather = () => {
       ),
     };
 
-    localCache.value = { fetchedAt: cacheKey, weather: weather };
+    localCache.value = { fetchedAt: newSyncKey, weather: weather };
 
     return weather;
   });
@@ -84,9 +81,9 @@ export const useWeather = () => {
   const unwatch = watch(coords, (newCoord, oldCoord) => {
     if (newCoord == oldCoord) return;
     if (newCoord.longitude == Infinity) return;
-    refresh();
+    weatherData.refresh();
     unwatch();
   });
 
-  return { weather, error, refresh };
+  return weatherData;
 };

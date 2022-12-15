@@ -1,5 +1,5 @@
 <template>
-  <AllowGeo v-if="!allowGeo" />
+  <AllowGeo v-if="!hasGeo" />
   <div v-else class="weather">
     <p>Isn't the weather awesome today?</p>
     <h1>Current Weather</h1>
@@ -51,25 +51,23 @@
 </style>
 
 <script lang="ts" setup>
-import { useLocalStorage, useGeolocation } from '@vueuse/core';
-const { weather } = useWeather();
+import { useGeolocation } from '@vueuse/core';
+const { data: weather, pending } = useWeather();
 
 const { coords, locatedAt, error: geoError } = useGeolocation();
-const allowGeo = computed(() => geoError.value == null);
+const hasGeo = computed(() => geoError.value == null && !pending.value);
 
 const temperatureInFahrenheit = ref(false);
-
 const celsiusToFahrenheit = (cel: number): number => cel * 1.8 + 32;
 const toggle = (value) => {
   temperatureInFahrenheit.value = value;
 };
 
 const convertedTemp = computed(() => {
+  const unit = temperatureInFahrenheit.value ? ' °F' : ' °C';
   const converted = temperatureInFahrenheit.value
     ? celsiusToFahrenheit(weather.value.temp)
     : weather.value.temp;
-
-  const unit = temperatureInFahrenheit.value ? ' °F' : ' °C';
 
   return Number(converted).toFixed(1) + unit;
 });
