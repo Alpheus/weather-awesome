@@ -1,28 +1,47 @@
 import { useLocalStorage, useGeolocation } from '@vueuse/core';
 
+const cacheKey = (date: Date): string => {
+  date.setMinutes(Math.floor(date.getMinutes() / 5) * 5);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
+
+  return date.valueOf();
+};
+
+const defaultW = {
+  temp: null,
+  location: 'Loading...',
+  humidity: 0,
+  weather: '',
+  wind: 0,
+  sunrise: '',
+  sunset: '',
+};
+
 export const useWeather = () => {
   const config = useRuntimeConfig();
   const { coords, error: geoError } = useGeolocation();
+  const localCache = useLocalStorage('weather-cache', {
+    fetchedAt: '',
+    weather: null,
+  });
 
   const {
     data: weather,
     error,
     refresh,
   } = useLazyAsyncData('weather', async () => {
-    let response = {};
-    let defaultW = {
-      temp: null,
-      location: 'Loading...',
-      humidity: 0,
-      weather: '',
-      wind: 0,
-      sunrise: '',
-      sunset: '',
-    };
-
     if (geoError.value) return defaultW;
     if (coords.value.longitude == 0) return defaultW;
     if (coords.value.longitude == Infinity) return defaultW;
+
+    let response;
+
+    const newSyncKey = cacheKey(Date.NOW);
+    // It is reasonable to assume this device won't move substantially in 5 minutes
+    if (localCache.value.fetchedAt == newSyncKey) {
+      return;
+    }
 
     try {
       response = await $fetch(config.weatherUrl, {
@@ -35,7 +54,7 @@ export const useWeather = () => {
       });
     } catch (e) {}
 
-    return {
+    const weather = {
       temp: response.main.temp,
       location: `${response.name}, ${response.sys.country}`,
       humidity: response.main.humidity,
@@ -56,6 +75,10 @@ export const useWeather = () => {
         }
       ),
     };
+
+    localCache.value = { fetchedAt: cacheKey, weather: weather };
+
+    return weather;
   });
 
   const unwatch = watch(coords, (newCoord, oldCoord) => {
